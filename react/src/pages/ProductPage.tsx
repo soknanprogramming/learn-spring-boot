@@ -3,7 +3,7 @@ import TableProduct from "../components/TableProduct"
 
 const ProductPage: React.FC = () => {
     return (
-        <div className="justify-center">
+        <div className="justify-center w-full">
             <TableProduct />
         </div>
     )

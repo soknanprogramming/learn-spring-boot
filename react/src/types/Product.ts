@@ -5,3 +5,10 @@ export type Product = {
     quantity: number;
     description: string;
 }
+
+export type ProductForm = {
+  name: string;
+  description: string;
+  price: number | "";
+  quantity: number | "";
+};
