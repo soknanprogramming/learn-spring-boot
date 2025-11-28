@@ -8,6 +8,7 @@ type ProductState = {
     loading: boolean;
     error: string | null;
     fetchProducts: () => void;
+    searchProducts: (keyword: string) => void;
 }
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -26,6 +27,16 @@ const useProducts = create<ProductState>((set) => ({
       console.error(err);
     }
   },
+  searchProducts: async (keyword) => {
+    set({ loading: true, error: null});
+    try {
+      const response = await axios.get(`${apiUrl}/api/products/search?keyword=${keyword}`);
+      set({ products: response.data, loading: false});
+    } catch (err) {
+      set({ error: "Failed to search products", loading: false});
+      console.error(err);
+    }
+  }
 }));
 
 export default useProducts;

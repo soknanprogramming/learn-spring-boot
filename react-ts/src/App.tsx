@@ -10,16 +10,18 @@ import AddProduct from "./pages/AddProduct"
 function App() {
 
   return (
-    <BrowserRouter>
-      <TopBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product" element={<ProductPage />} />
-        <Route path="/product/:id" element={<ViewDetail />} />
-        <Route path="/product/:id/edit" element={<EditProduct />} />
-        <Route path="/add_new_product" element={<AddProduct />} />
-      </Routes>
-    </BrowserRouter>
+    <div className="w-full">
+      <BrowserRouter>
+        <TopBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product" element={<ProductPage />} />
+          <Route path="/product/:id" element={<ViewDetail />} />
+          <Route path="/product/:id/edit" element={<EditProduct />} />
+          <Route path="/add_new_product" element={<AddProduct />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   )
 }
 
