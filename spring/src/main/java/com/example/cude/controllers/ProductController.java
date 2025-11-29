@@ -43,8 +43,8 @@ public class ProductController {
 
     @PostMapping("/")
     public ResponseEntity<Product> addProduct(@Valid @RequestBody Product product) {
-        System.out.println("User request post method");
-        System.out.println(product);
+        // System.out.println("User request post method");
+        // System.out.println(product);
         Product newProduct = server.addProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
@@ -80,7 +80,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> getMethodName(@RequestParam String keyword) {
+    public ResponseEntity<List<Product>> searchProductsByKeyword(@RequestParam String keyword) {
         var result = server.searchProducts(keyword);
         if(result.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());

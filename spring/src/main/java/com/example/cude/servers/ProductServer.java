@@ -46,7 +46,7 @@ public class ProductServer {
     }
 
     public List<Product> searchProducts(String keyword) {
-        System.out.println(keyword);
+        // System.out.println(keyword);
         return repo.searchProducts(keyword);
     }
 
