@@ -23,7 +23,11 @@ public class ProductServer {
     }
 
     public Product getProductById(int id) {
-        return repo.findById(id).get();
+        try {
+            return repo.findById(id).get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Product updateProduct(int productId, Product newProduct){
