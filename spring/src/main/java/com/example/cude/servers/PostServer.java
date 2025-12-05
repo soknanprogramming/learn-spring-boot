@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.example.cude.dto.PostReqDTO;
 import com.example.cude.dto.PostResDTO;
 import com.example.cude.models.Post;
 import com.example.cude.repos.PostRepo;
@@ -30,10 +32,13 @@ public class PostServer {
         return repo.findAll();
     }
 
-    public Post createPost(Post post, MultipartFile image) throws IOException {
-        post.setImage_name(image.getOriginalFilename());
-        post.setImage_type(image.getContentType());
-        post.setImage_data(image.getBytes());
+    public Post createPost(PostReqDTO postReqDTO) throws IOException {
+        Post post = new Post();
+        post.setImage_name(postReqDTO.getImage().getOriginalFilename());
+        post.setImage_type(postReqDTO.getImage().getContentType());
+        post.setImage_data(postReqDTO.getImage().getBytes());
+        post.setTitle(postReqDTO.getTitle());
+        post.setContent(postReqDTO.getContent());
         
         return repo.save(post);
     }
@@ -46,6 +51,18 @@ public class PostServer {
         }
     }
 
+    public Post updatePost(int postId, PostReqDTO postReqDTO) throws IOException {
+        Post post = repo.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
 
+        post.setTitle(postReqDTO.getTitle());
+        post.setContent(postReqDTO.getContent());
+        if(postReqDTO.getImage() != null){
+            post.setImage_name(postReqDTO.getImage().getOriginalFilename());
+            post.setImage_type(postReqDTO.getImage().getContentType());
+            post.setImage_data(postReqDTO.getImage().getBytes());
+        }
+
+        return repo.save(post);
+    }
 
 }

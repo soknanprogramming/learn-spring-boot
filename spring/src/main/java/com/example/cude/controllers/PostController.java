@@ -7,19 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.example.cude.dto.PostReqDTO;
 import com.example.cude.dto.PostResDTO;
 import com.example.cude.models.Post;
 import com.example.cude.servers.PostServer;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -46,12 +44,10 @@ public class PostController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createPost(
-            @RequestPart("post") Post post, 
-            @RequestPart("image") MultipartFile image) {
-        System.out.println("You are request at /api/posts/");
+    public ResponseEntity<?> createPost(@ModelAttribute PostReqDTO postReqDTO) {
+        // System.out.println("You are request at /api/posts/");
         try {
-            Post newPost = server.createPost(post, image);
+            Post newPost = server.createPost(postReqDTO);
             PostResDTO dto = server.toDTO(newPost);
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
@@ -81,5 +77,22 @@ public class PostController {
         return ResponseEntity.ok(dto);
     }
     
+    @PutMapping("/{PostId}")
+    public ResponseEntity<?> putMethodName(@PathVariable int PostId, @ModelAttribute PostReqDTO postReqDTO) {
+        
+        Post updatedPost;
+        try {
+            updatedPost = server.updatePost(PostId, postReqDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating post: " + e.getMessage());
+        }
+
+        if (updatedPost == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        PostResDTO dto = server.toDTO(updatedPost);
+        return ResponseEntity.ok(dto);
+    }
     
 }
