@@ -65,4 +65,14 @@ public class PostServer {
         return repo.save(post);
     }
 
+    public boolean deletePostById(int postId){
+        var post = repo.findById(postId);
+        if(post.isEmpty()){
+            return false;
+        }else{
+            repo.deleteById(postId);
+            return true;
+        }
+    }
+
 }

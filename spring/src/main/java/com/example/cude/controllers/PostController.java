@@ -2,10 +2,12 @@ package com.example.cude.controllers;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,7 +70,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResDTO> getMethodName(@PathVariable int postId) {
+    public ResponseEntity<PostResDTO> getPostById(@PathVariable int postId) {
         Post post = server.getPostById(postId);
         if (post == null) {
             return ResponseEntity.notFound().build();
@@ -78,7 +80,7 @@ public class PostController {
     }
     
     @PutMapping("/{PostId}")
-    public ResponseEntity<?> putMethodName(@PathVariable int PostId, @ModelAttribute PostReqDTO postReqDTO) {
+    public ResponseEntity<?> updatePost(@PathVariable int PostId, @ModelAttribute PostReqDTO postReqDTO) {
         
         Post updatedPost;
         try {
@@ -94,5 +96,14 @@ public class PostController {
         PostResDTO dto = server.toDTO(updatedPost);
         return ResponseEntity.ok(dto);
     }
-    
+
+    @DeleteMapping("/{PostId}")
+    public ResponseEntity<?> deletePost(@PathVariable int PostId){
+        boolean result = server.deletePostById(PostId);
+        if(!result){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found!");
+        } else {
+            return ResponseEntity.ok("Post deleted successfully.");
+        }
+    }
 }
