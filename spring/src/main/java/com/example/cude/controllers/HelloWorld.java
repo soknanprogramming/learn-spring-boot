@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HelloWorld {
     @GetMapping("/")
     public String getMethodName() {
+
         return "Hello World!";
     }
     
