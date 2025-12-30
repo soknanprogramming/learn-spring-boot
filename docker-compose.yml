@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: learn_spring_security
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: soknan
+      POSTGRES_PASSWORD: soknan
+      POSTGRES_DB: learn_spring_security
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_spring_security:/var/lib/postgresql/data
+volumes:
+  db_spring_security:
