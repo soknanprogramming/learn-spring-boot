@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16
-    container_name: my_postgres
+    container_name: my_postgres_springboot
     restart: unless-stopped
     environment:
       POSTGRES_USER: myuser
