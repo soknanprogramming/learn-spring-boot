@@ -33,11 +33,6 @@ public class ProductController {
     @GetMapping("/")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = server.getAllProducts();
-
-        if (products.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
-        }
-
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
@@ -51,22 +46,15 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable int productId) {
-        Product product = server.getProductById(productId);
-        if (product != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(product);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return server.getProductById(productId)
+                .map(product -> ResponseEntity.status(HttpStatus.OK).body(product))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable int productId, @RequestBody Product newProduct) {
         var result = server.updateProduct(productId, newProduct);
-        if ( result == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     
     @DeleteMapping("/{productId}")
@@ -82,11 +70,7 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProductsByKeyword(@RequestParam String keyword) {
         var result = server.searchProducts(keyword);
-        if(result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     
     

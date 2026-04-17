@@ -1,10 +1,13 @@
 package com.example.cude.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cude.dto.AuthResponse;
 import com.example.cude.models.Users;
 import com.example.cude.servers.UserService;
 
@@ -15,13 +18,13 @@ public class UserController {
     UserService service;
 
     @PostMapping("/register")
-    public String registerNewUser(@RequestBody Users users) {
-        return service.registerUser(users);
+    public ResponseEntity<AuthResponse> registerNewUser(@RequestBody Users users) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.registerUser(users));
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Users users){
-        return service.verify(users);
+    public ResponseEntity<AuthResponse> login(@RequestBody Users users){
+        return ResponseEntity.ok(service.verify(users));
     }
 
 }

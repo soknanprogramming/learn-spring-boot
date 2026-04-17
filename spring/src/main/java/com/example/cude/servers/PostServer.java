@@ -2,6 +2,7 @@ package com.example.cude.servers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,12 +44,8 @@ public class PostServer {
         return repo.save(post);
     }
 
-    public Post getPostById(int id){
-        try {
-            return repo.findById(id).get();
-        } catch (Exception e) {
-            return null;
-        }
+    public Optional<Post> getPostById(int id){
+        return repo.findById(id);
     }
 
     public Post updatePost(int postId, PostReqDTO postReqDTO) throws IOException {

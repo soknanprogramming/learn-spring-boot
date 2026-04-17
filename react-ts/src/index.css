@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+:root {
+  --ink: #082032;
+  --ocean: #12486b;
+  --mist: #d8f2ff;
+  color: var(--mist);
+  font-family: "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #04121f 0%, #0d3550 45%, #14557d 100%);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}

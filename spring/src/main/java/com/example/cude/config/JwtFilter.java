@@ -1,7 +1,6 @@
 package com.example.cude.config;
 
 import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +30,6 @@ public class JwtFilter extends OncePerRequestFilter{
     @Autowired
     private ApplicationContext context;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -44,16 +42,13 @@ public class JwtFilter extends OncePerRequestFilter{
             try {
                 username = JwtUtil.extractUserName(token);
             } catch (ExpiredJwtException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("JWT expired");
+                writeUnauthorizedResponse(response, request.getRequestURI(), "JWT expired");
                 return;
             } catch (MalformedJwtException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid JWT");
+                writeUnauthorizedResponse(response, request.getRequestURI(), "Invalid JWT");
                 return;
             } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("JWT error");
+                writeUnauthorizedResponse(response, request.getRequestURI(), "JWT error");
                 return;
             }
         }
@@ -70,5 +65,13 @@ public class JwtFilter extends OncePerRequestFilter{
 
         filterChain.doFilter(request, response);
     }
-    
+
+    private void writeUnauthorizedResponse(HttpServletResponse response, String path, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write(String.format(
+                "{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"%s\",\"path\":\"%s\"}",
+                message,
+                path));
+    }
 }

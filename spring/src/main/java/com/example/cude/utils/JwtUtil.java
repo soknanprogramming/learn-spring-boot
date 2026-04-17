@@ -10,6 +10,7 @@ import java.util.function.Function;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +21,12 @@ import io.jsonwebtoken.Claims;
 
 @Component
 public class JwtUtil {
-    private String secretKey = "";
+    private final String secretKey;
 
-    public JwtUtil() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            SecretKey sk = keyGenerator.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    public JwtUtil(@Value("${jwt.secret:}") String configuredSecret) {
+        this.secretKey = configuredSecret == null || configuredSecret.isBlank()
+                ? generateSecretKey()
+                : configuredSecret;
     }
 
     public String generateToken(String username) {
@@ -39,7 +36,7 @@ public class JwtUtil {
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))
                 .and()
                 .signWith(getKey())
                 .compact();
@@ -78,5 +75,15 @@ public class JwtUtil {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    private String generateSecretKey() {
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            SecretKey sk = keyGenerator.generateKey();
+            return Base64.getEncoder().encodeToString(sk.getEncoded());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

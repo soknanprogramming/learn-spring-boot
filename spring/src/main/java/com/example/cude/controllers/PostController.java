@@ -35,9 +35,6 @@ public class PostController {
     @GetMapping("/")
     public ResponseEntity<List<PostResDTO>> getAllPost(){
         List<Post> posts = server.getPost();
-        if(posts.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
         List<PostResDTO> postsDTO = posts.stream()
                 .map(post -> server.toDTO(post))
                 .toList();
@@ -59,7 +56,8 @@ public class PostController {
 
     @GetMapping("/{postId}/image")
     public ResponseEntity<byte[]> getImageByPostId(@PathVariable int postId) {
-        Post post = server.getPostById(postId);
+        Post post = server.getPostById(postId)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
 
         byte[] imageData = post.getImage_data();
         if (imageData == null) {
@@ -71,10 +69,8 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResDTO> getPostById(@PathVariable int postId) {
-        Post post = server.getPostById(postId);
-        if (post == null) {
-            return ResponseEntity.notFound().build();
-        }
+        Post post = server.getPostById(postId)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
         PostResDTO dto = server.toDTO(post);
         return ResponseEntity.ok(dto);
     }
@@ -87,10 +83,6 @@ public class PostController {
             updatedPost = server.updatePost(PostId, postReqDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error updating post: " + e.getMessage());
-        }
-
-        if (updatedPost == null) {
-            return ResponseEntity.notFound().build();
         }
 
         PostResDTO dto = server.toDTO(updatedPost);
